@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.corejavaapp.main.model.Employee;
+import com.corejavaapp.main.model.EmployeeProject;
+import com.corejavaapp.main.utility.DBUtil;
 
 public class EmployeeRepository {
 
@@ -85,4 +87,55 @@ public class EmployeeRepository {
 		dbClose();
 		return empList;
 	}
+
+	public void addEmployee(Employee employee) {
+
+		dbConnect();
+		String sql1 = "Insert into address values (?,?,?)";
+		String sql2 = "insert into employee values(?,?,?,?,?,?)";
+		try {
+			PreparedStatement stmt = con.prepareStatement(sql1);
+			stmt.setInt(1, employee.getAddress().getId());
+			stmt.setString(2, employee.getAddress().getCity());
+			stmt.setString(3, employee.getAddress().getPincode());
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		try {
+			PreparedStatement stmt = con.prepareStatement(sql2);
+			stmt.setInt(1, employee.getId());
+			stmt.setString(2, employee.getName());
+			stmt.setString(3, employee.getBranch());
+			stmt.setString(4, employee.getDepartment());
+			stmt.setDouble(5, employee.getSalary());
+			stmt.setInt(6, employee.getAddress().getId());
+			stmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	public void assignProject(EmployeeProject employeeProject, int emp_id, int project_id) {
+		DBUtil dbUtil = new DBUtil();
+		con = dbUtil.dbConnect();
+		String sql = "insert into employee_project values(?,?,?,?)";
+		try {
+			PreparedStatement stmt = con.prepareStatement(sql);
+			stmt.setInt(1, employeeProject.getId());
+			stmt.setInt(2, emp_id);
+			stmt.setInt(3, project_id);
+			stmt.setString(4, employeeProject.getDateOfAssign().toString());
+			stmt.executeUpdate();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		dbUtil.dbClose();
+	}
 }
+
+/*
+ * executeQuery(): select --- ResultSet executeUpdate() : insert, update,delete
+ */
